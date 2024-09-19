@@ -14,13 +14,14 @@ public class AdharEntity {
 
     }
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="adharno")
     public Integer adharno;
 
     @Column(name="name")
     public String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "adharEntity",cascade = CascadeType.ALL)
     public List<AdressEntity> adressEntities;
 
 }

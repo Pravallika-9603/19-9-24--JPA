@@ -10,13 +10,16 @@ public class AdressEntity {
     public AdressEntity(){}
 
     @Id
-    @Column(name = "adharno")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     public Integer id;
 
     @Column(name = "state")
     public String state;
 
+
+
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "adharno",referencedColumnName = "adharno")
     public AdharEntity adharEntity;
 }

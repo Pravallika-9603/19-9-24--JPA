@@ -1,6 +1,6 @@
 package com.neoteric.fullstackdemo_31082024.hibernate;
 
-import com.neoteric.fullstackdemo_31082024.model.AccountEntity;
+import com.neoteric.fullstackdemo_31082024.model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -9,14 +9,13 @@ import org.hibernate.service.ServiceRegistry;
 
 import java.util.Properties;
 
-//Hibernate(ORM tool) is a specification(another ways to connect to db) for jbdc driver
-//
+
 public class HibernateUtils {
 
     public static SessionFactory sessionFactory;
 
-    public static SessionFactory getSessionFactory() {
-        if (sessionFactory == null) {
+    public static SessionFactory getSessionFactory (){
+        if(sessionFactory==null){
 
             Configuration configuration=new Configuration();
 
@@ -26,17 +25,19 @@ public class HibernateUtils {
             properties.put(Environment.URL,"jdbc:mysql://localhost:3306/bank");
             properties.put(Environment.USER,"root");
             properties.put(Environment.PASS,"root");
-            properties.put(Environment.DIALECT,"org.hibernate.dialect.MySQLDialect");
+            properties.put(Environment.DIALECT,"org.hibernate.dialect.MySQL8Dialect");
             properties.put(Environment.SHOW_SQL,true);
             configuration.setProperties(properties);
-            configuration.addAnnotatedClass(AccountEntity.class);
+            configuration.addAnnotatedClass(AccountEntity.class)
+                    .addAnnotatedClass(AdressEntity.class)
+                    .addAnnotatedClass(AccountAddressEntity.class)
+                    .addAnnotatedClass(AdharEntity.class);
 
-            ServiceRegistry serviceRegistry=new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-            sessionFactory= configuration.buildSessionFactory(serviceRegistry);
-
-            System.out.println("Hibernates");
-
+            // ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+            ServiceRegistry registry=new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
+            sessionFactory = configuration.buildSessionFactory(registry);
         }
         return sessionFactory;
     }
+
 }
