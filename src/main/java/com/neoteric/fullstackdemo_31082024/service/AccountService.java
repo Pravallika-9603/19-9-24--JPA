@@ -3,6 +3,7 @@ package com.neoteric.fullstackdemo_31082024.service;
 import com.neoteric.fullstackdemo_31082024.exception.AccountCreationFailedException;
 import com.neoteric.fullstackdemo_31082024.hibernate.HibernateUtils;
 import com.neoteric.fullstackdemo_31082024.model.*;
+import com.neoteric.fullstackdemo_31082024.repository.AccountRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -10,16 +11,57 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
+@Service(value = "accountServiceTest")
 public class AccountService {
+
+    @Autowired
+    AccountRepository accountRepository;
+
+    public Account searchAccountByManagedJpa(String accountnumber){
+        Account account=null;
+        Optional<AccountEntity> optionalAccountEntity=accountRepository.findById(accountnumber);
+        if(optionalAccountEntity.isPresent()) {
+            AccountEntity accountEntity = optionalAccountEntity.get();
+            account = Account.builder()
+                    .accountNumber(accountEntity.getAccountNumber())
+                    .name(accountEntity.getName())
+                    .mobileNumber(accountEntity.getMobileNumber())
+                    .balance(accountEntity.getBalance())
+                    .pan(accountEntity.getPan())
+                    .balance(accountEntity.getBalance())
+                    .build();
+
+
+            List<AccountAddressEntity> accountAddressEntityList =
+                    accountEntity.getAccountAddressEntityList();
+
+
+        if (Objects.nonNull(accountAddressEntityList)&& accountAddressEntityList.size()>0) {
+
+            AccountAddressEntity accountAddressEntity = accountAddressEntityList.get(0);
+            System.out.println("AccountAddressEntity is Loaded");
+            Address address = new Address();
+            address.setAdd1(accountAddressEntity.getAddress1());
+            address.setAdd2(accountAddressEntity.getAddress2());
+            address.setPincode(accountAddressEntity.getPincode());
+            address.setCity(accountAddressEntity.getCity());
+            address.setState(accountAddressEntity.getState());
+            account.setAddress(address);
+        }
+
+        }
+        System.out.println(account);
+        return account;
+
+    }
 
     public String oneToMany1(Account account){
         SessionFactory sessionFactory= HibernateUtils.getSessionFactory();
@@ -105,7 +147,7 @@ public class AccountService {
 
         SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
         Session session = sessionFactory.openSession();
-        Query<AccountEntity> query = session.createQuery("From AccountEntity a where a.accountNumber=:inputAccountNumber");
+        Query<AccountEntity> query = session.createQuery("From AccountEntity a where a.accountnumber=:inputAccountNumber");
         query.setParameter("inputAccountNumber", accNo);
         AccountEntity accountEntity = query.list().get(0);
         System.out.println("Account is Loaded");

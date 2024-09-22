@@ -33,6 +33,6 @@ public class AccountEntity {
     @Column(name = "address")
     private String address;
 
-    @OneToMany(mappedBy = "accountEntity",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "accountEntity",cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     public List<AccountAddressEntity> accountAddressEntityList;
 }

@@ -31,6 +31,6 @@ public class AccountAddressEntity {
     private Integer status;
 
     @ManyToOne
-    @JoinColumn(name = "accNo",referencedColumnName = "accountnumber")
+    @JoinColumn(name = "accno",referencedColumnName = "accountNumber")
     private AccountEntity accountEntity;
 }
